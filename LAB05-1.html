@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <!-- 設定文件編碼為 UTF-8，支援繁體中文 -->
+    <meta charset="UTF-8">
+    <!-- 確保網頁在行動裝置上能適應螢幕大小 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 設定網頁標題 -->
+    <title>桌燈控制</title>
+    <style>
+        /* 設定整體頁面樣式 */
+        body {
+            /* 使用 Arial 字體，若不可用則使用 sans-serif */
+            font-family: Arial, sans-serif;
+            /* 使內容在頁面中垂直和水平居中 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 設定頁面高度為視窗的 100% */
+            height: 100vh;
+            /* 移除預設外邊距 */
+            margin: 0;
+            /* 設定背景色為淺灰色 */
+            background-color: #f0f2f5;
+        }
+        /* 定義控制面板容器樣式 */
+        .container {
+            /* 內容居中對齊 */
+            text-align: center;
+            /* 設定白色背景 */
+            background-color: white;
+            /* 內邊距為 2rem */
+            padding: 2rem;
+            /* 圓角邊框 */
+            border-radius: 10px;
+            /* 添加陰影效果，增加立體感 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* 標題樣式 */
+        h1 {
+            /* 設定文字顏色為深灰色 */
+            color: #333;
+            /* 底部外邊距為 1.5rem */
+            margin-bottom: 1.5rem;
+        }
+        /* 定義按鈕共用樣式 */
+        .button {
+            /* 設定為行內塊狀元素，允許並排顯示 */
+            display: inline-block;
+            /* 內邊距，增加按鈕大小 */
+            padding: 10px 20px;
+            /* 左右外邊距，保持按鈕間距 */
+            margin: 0 10px;
+            /* 文字大小為 16px */
+            font-size: 16px;
+            /* 文字顏色為白色 */
+            color: white;
+            /* 移除連結下劃線 */
+            text-decoration: none;
+            /* 圓角邊框 */
+            border-radius: 5px;
+            /* 滑鼠游標顯示為指針 */
+            cursor: pointer;
+            /* 背景色過渡動畫，0.3秒 */
+            transition: background-color 0.3s;
+            /* 移除按鈕的預設邊框 */
+            border: none;
+            /* 移除按鈕點擊時的黑色外框 */
+            outline: none;
+        }
+        /* 開燈按鈕樣式 */
+        .button-on {
+            /* 設定背景色為綠色 */
+            background-color: #4CAF50;
+        }
+        /* 開燈按鈕懸停效果 */
+        .button-on:hover {
+            /* 懸停時背景色變為較深的綠色 */
+            background-color: #45a049;
+        }
+        /* 關燈按鈕樣式 */
+        .button-off {
+            /* 設定背景色為紅色 */
+            background-color: #f44336;
+        }
+        /* 關燈按鈕懸停效果 */
+        .button-off:hover {
+            /* 懸停時背景色變為較深的紅色 */
+            background-color: #da190b;
+        }
+        /* 燈狀態顯示樣式 */
+        .status {
+            /* 頂部外邊距 */
+            margin-top: 1rem;
+            /* 文字大小 */
+            font-size: 18px;
+            /* 文字顏色 */
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- 控制面板容器 -->
+    <div class="container">
+        <!-- 顯示標題 -->
+        <h1>桌燈控制</h1>
+        <!-- 開燈按鈕，點擊後發送 /led?status=on 請求 -->
+        <button onclick="controlLed('on')" class="button button-on">開燈</button>
+        <!-- 關燈按鈕，點擊後發送 /led?status=off 請求 -->
+        <button onclick="controlLed('off')" class="button button-off">關燈</button>
+        <!-- 顯示燈的目前狀態 -->
+        <div id="status" class="status">目前狀態：載入中...</div>
+    </div>
+    <script>
+        // 控制 LED 的函式，發送 AJAX 請求
+        function controlLed(status) {
+            fetch(`/led?status=${status}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('控制失敗');
+                    updateStatus(); // 更新狀態顯示
+                })
+                .catch(error => console.error('錯誤:', error));
+        }
+
+        // 更新燈狀態顯示的函式
+        function updateStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => {
+                    const statusText = data.status === 'on' ? '開燈' : '關燈';
+                    document.getElementById('status').textContent = `目前狀態：${statusText}`;
+                    // 1 秒後再次呼叫 updateStatus
+                    setTimeout(updateStatus, 1000);
+                })
+                .catch(error => {
+                    console.error('狀態查詢錯誤:', error);
+                    document.getElementById('status').textContent = '目前狀態：無法載入';
+                    // 若錯誤，1 秒後仍嘗試再次更新
+                    setTimeout(updateStatus, 1000);
+                });
+        }
+
+        // 頁面載入時立即更新狀態
+        window.onload = updateStatus;
+    </script>
+</body>
+</html>

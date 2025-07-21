@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM 語意調色盤</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        color: #333;
+      }
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 1.5em;
+        text-align: center;
+        color: #2c3e50;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #ffffff;
+        padding: 2em;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 500px;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 0.8em;
+        margin-bottom: 1em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+      input[type="text"]:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+      }
+      button {
+        background-color: #3498db;
+        color: white;
+        padding: 0.8em 1.5em;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+      button:hover {
+        background-color: #2980b9;
+        transform: scale(1.05);
+      }
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 1.8em;
+        }
+        form {
+          padding: 1.5em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>請描述你想要的 LED 燈色與亮度</h1>
+    <form action="/send" method="get">
+      <input type="text" name="description" placeholder="請輸入描述">
+      <button type="submit">傳送</button>
+    </form>
+  </body>
+</html>
